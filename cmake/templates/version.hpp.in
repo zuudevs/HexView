@@ -1,0 +1,8 @@
+#pragma once
+
+constexpr const char* author = "@PROJECT_AUTHOR@";
+constexpr const char* version = "@PROJECT_VERSION@";
+constexpr unsigned char version_major = @PROJECT_VERSION_MAJOR@;
+constexpr unsigned char version_minor = @PROJECT_VERSION_MINOR@;
+constexpr unsigned char version_patch = @PROJECT_VERSION_PATCH@;
+constexpr const char* repository_url = "@PROJECT_REPOSITORY_URL@";

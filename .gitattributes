@@ -1,0 +1,38 @@
+* text=auto
+
+*.c text eol=lf
+*.cc text eol=lf
+*.cpp text eol=lf
+*.cxx text eol=lf
+*.h text eol=lf
+*.hh text eol=lf
+*.hpp text eol=lf
+*.hxx text eol=lf
+*.inl text eol=lf
+
+CMakeLists.txt text eol=lf
+*.cmake text eol=lf
+*.in text eol=lf
+*.json text eol=lf
+vcpkg.json text eol=lf
+
+*.md text eol=lf
+.gitignore text eol=lf
+.gitattributes text eol=lf
+.clang-format text eol=lf
+.clang-tidy text eol=lf
+
+*.sh text eol=lf
+*.bat text eol=crlf
+*.cmd text eol=crlf
+*.ps1 text eol=crlf
+
+*.dll binary
+*.lib binary
+*.so binary
+*.a binary
+*.exe binary
+*.pdb binary
+
+cmake/third_party/** linguist-vendored
+out/** linguist-generated
