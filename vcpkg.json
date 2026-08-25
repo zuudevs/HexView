@@ -1,5 +1,5 @@
 {
-    "name": "hex-viewer",
+    "name": "hexview",
     "version": "0.1.0",
     "description": "Implementasi Hex Viewer kustom menggunakan C++. Dikembangkan sebagai bagian dari eksplorasi pemrograman tingkat rendah untuk menganalisis byte stream dan struktur biner dari berbagai format file.",
     "dependencies": [
