@@ -5,28 +5,40 @@
 namespace zuu::hexview {
 
 enum class Error : std::uint8_t {
-	None,
-	PathIsNotExist,
-	IsNotFile,
-	InvalidPath,
-	CantOpenFile,
-	// TODO: Will expand here!
+    None,
 
-	Unknown = 255
+    PathNotFound,
+    PathNotFile,
+    InvalidPath,
+    FileOpenFailed,
+
+    // TODO: Add more errors here.
+
+    Unknown = 255
 };
 
-constexpr const char* ResolveError(Error err) noexcept {
-	switch (err) {
-		case Error::None: return "No Error";
-		case Error::PathIsNotExist: return "Path is not Exist";
-		case Error::IsNotFile: return "Path is not file type";
-		case Error::InvalidPath: return "Invalid path format";
-		case Error::CantOpenFile: return "Can't open file";
-		// TODO: Will expand here!
+[[nodiscard]] constexpr const char*
+ResolveError(Error error) noexcept {
+    switch (error) {
+        case Error::None:
+            return "No error";
 
-		case Error::Unknown:
-		default: return "Unknown Error";
-	}
+        case Error::PathNotFound:
+            return "Path does not exist";
+
+        case Error::PathNotFile:
+            return "Path does not refer to a regular file";
+
+        case Error::InvalidPath:
+            return "Invalid path";
+
+        case Error::FileOpenFailed:
+            return "Failed to open file";
+
+        case Error::Unknown:
+        default:
+            return "Unknown error";
+    }
 }
 
 } // namespace zuu::hexview

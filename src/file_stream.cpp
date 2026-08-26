@@ -32,14 +32,14 @@ std::expected<void, Error> FileStream::open(std::string_view filepath) NOEXCEPT 
 	file.open(*res, std::ios::binary | std::ios::ate);
 
 	if (!file.is_open()) {
-		return std::unexpected{Error::CantOpenFile};
+		return std::unexpected{Error::FileOpenFailed};
 	}
 
 	auto sz = file.tellg();
 
 	if (sz == -1) {
         file.close();
-        return std::unexpected{Error::CantOpenFile};
+        return std::unexpected{Error::FileOpenFailed};
     }
 
 	file.seekg(0, std::ios::beg);
@@ -83,11 +83,11 @@ std::expected<FileStream::Path, Error> FileStream::ResolvePath(std::string_view 
 	Path path(filepath);
 
 	if (!fs::exists(path)) {
-		return std::unexpected{Error::PathIsNotExist};
+		return std::unexpected{Error::PathNotFound};
 	}
 
 	if (!fs::is_regular_file(path)) {
-		return std::unexpected{Error::PathIsNotExist};
+		return std::unexpected{Error::PathNotFile};
 	}
 
 #ifdef ENABLE_EXCEPTION
