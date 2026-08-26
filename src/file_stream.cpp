@@ -1,6 +1,4 @@
-#pragma once
-
-#include "HexView/error.hpp"
+#include <HexView/error.hpp>
 
 #include <cstdint>
 #include <expected>
@@ -73,6 +71,10 @@ std::span<std::uint8_t> FileStream::getChunk(std::size_t bytes_per_line) NOEXCEP
 	}
 
 	return std::span<std::uint8_t>{};
+}
+
+std::uint64_t FileStream::getOffset() const NOEXCEPT {
+	return offset;
 }
 
 std::expected<FileStream::Path, Error> FileStream::ResolvePath(std::string_view filepath) const NOEXCEPT {

@@ -8,5 +8,7 @@ constexpr unsigned char version_major = @PROJECT_VERSION_MAJOR@;
 constexpr unsigned char version_minor = @PROJECT_VERSION_MINOR@;
 constexpr unsigned char version_patch = @PROJECT_VERSION_PATCH@;
 constexpr const char* repository_url = "@PROJECT_REPOSITORY_URL@";
+constexpr const char* app_name = "@PROJECT_NAME@";
+constexpr const char* app_description = "@PROJECT_DESCRIPTION@";
 
 } // namespace zuu::hexview

@@ -10,6 +10,7 @@ enum class Error : std::uint8_t {
     PathNotFound,
     PathNotFile,
     InvalidPath,
+    InvalidSyntax,
     FileOpenFailed,
 
     // TODO: Add more errors here.
@@ -31,6 +32,9 @@ ResolveError(Error error) noexcept {
 
         case Error::InvalidPath:
             return "Invalid path";
+
+        case Error::InvalidSyntax:
+            return "Invalid syntax command";
 
         case Error::FileOpenFailed:
             return "Failed to open file";

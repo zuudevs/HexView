@@ -28,6 +28,7 @@ public:
 	std::expected<void, Error> open(std::string_view filepath) NOEXCEPT;
 	void close() NOEXCEPT;
 	std::span<std::uint8_t> getChunk(std::size_t bytes_per_line = 8) NOEXCEPT;
+	[[nodiscard]] std::uint64_t getOffset() const NOEXCEPT;
 
 private:
 	using Path = std::filesystem::path;

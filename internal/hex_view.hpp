@@ -1,5 +1,8 @@
 #pragma once
 
+#include <HexView/error.hpp>
+#include <view_task.hpp>
+
 #include <span>
 #include <string_view>
 
@@ -9,10 +12,13 @@ class HexView {
 public:
 	HexView() noexcept;
 
+	void exec(std::span<char*> args) const noexcept;
+
+private:
+	void printError(Error errc) const noexcept;
 	void printHelp() const noexcept;
 	void printVersion() const noexcept;
-	void view() const noexcept;
-	void exec(std::span<std::string_view> args) const noexcept;
+	void view(ViewTask vwtask) const noexcept;
 };
 
 } // namespace zuu::hexview
