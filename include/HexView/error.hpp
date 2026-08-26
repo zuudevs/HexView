@@ -9,6 +9,7 @@ enum class Error : std::uint8_t {
 	PathIsNotExist,
 	IsNotFile,
 	InvalidPath,
+	CantOpenFile,
 	// TODO: Will expand here!
 
 	Unknown = 255
@@ -20,6 +21,7 @@ constexpr const char* ResolveError(Error err) noexcept {
 		case Error::PathIsNotExist: return "Path is not Exist";
 		case Error::IsNotFile: return "Path is not file type";
 		case Error::InvalidPath: return "Invalid path format";
+		case Error::CantOpenFile: return "Can't open file";
 		// TODO: Will expand here!
 
 		case Error::Unknown:

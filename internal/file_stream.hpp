@@ -7,6 +7,7 @@
 #include <expected>
 #include <filesystem>
 #include <fstream>
+#include <span>
 #include <vector>
 
 #define ENABLE_EXCEPTION
@@ -22,11 +23,11 @@ public:
 	FileStream(FileStream&&) NOEXCEPT = default;
 	FileStream& operator=(const FileStream&) NOEXCEPT = delete;
 	FileStream& operator=(FileStream&&) NOEXCEPT = default;
-	~FileStream() NOEXCEPT = default;
+	~FileStream() NOEXCEPT;
 
-	bool open(std::string_view filepath) NOEXCEPT;
+	std::expected<void, Error> open(std::string_view filepath) NOEXCEPT;
 	void close() NOEXCEPT;
-	const uint8_t* const getChunk(std::size_t bytes_per_line = 8) NOEXCEPT;
+	std::span<std::uint8_t> getChunk(std::size_t bytes_per_line = 8) NOEXCEPT;
 
 private:
 	using Path = std::filesystem::path;
@@ -37,6 +38,7 @@ private:
 	std::size_t size{};
 
 	[[nodiscard]] std::expected<Path, Error> ResolvePath(std::string_view filepath) const NOEXCEPT;
+	void clear() NOEXCEPT;
 };
 
 } // namespace zuu::hexview
