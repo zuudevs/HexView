@@ -1,24 +1,12 @@
 #include <HexView/error.hpp>
+#include <HexView/macros.hpp>
 #include <HexView/version.hpp>
+
 
 #include <charconv>
 #include <cstdint>
 #include <cstdio>
 #include <cstring>
-
-#ifdef __GNUC__
-	#include <fmt/core.h>
-	#include <fmt/std.h>
-
-	#define PRINT(...) fmt::print(__VA_ARGS__)
-	#define PRINTLN(...) fmt::println(__VA_ARGS__)
-#else
-	#include <print>
-
-	#define PRINT(...) std::print(__VA_ARGS__)
-	#define PRINTLN(...) std::println(__VA_ARGS__)
-#endif
-
 #include <span>
 #include <string_view>
 
@@ -26,7 +14,7 @@
 #include <file_stream.hpp>
 
 #ifndef NDEBUG
-	#include <system_error>
+    #include <system_error>
 #endif
 
 #include <view_config.hpp>
@@ -79,24 +67,24 @@ void
         PRINT("| ascii");
     }
 
-    PRINTLN();
+    PRINTLN("");
     if ((vw_config & ViewConfig::Offset) != ViewConfig::None) {
         PRINT("----------");
     }
 
-	if ((vw_config & ViewConfig::Length) != ViewConfig::None) {
-		for (auto i = 0; i < bytes_per_line; ++i) {
-			PRINT("---");
-		}
-	} else {
-		PRINT("------------------------");
-	}
+    if ((vw_config & ViewConfig::Length) != ViewConfig::None) {
+        for (auto i = 0; i < bytes_per_line; ++i) {
+            PRINT("---");
+        }
+    } else {
+        PRINT("------------------------");
+    }
 
     PRINT("--");
     if ((vw_config & ViewConfig::Ascii) != ViewConfig::None) {
         PRINT("-------");
     }
-    PRINTLN();
+    PRINTLN("");
 
     FileStream fst;
 
@@ -139,7 +127,7 @@ void
             }
         }
 
-        PRINTLN();
+        PRINTLN("");
     }
 }
 
@@ -171,29 +159,32 @@ void
     if (args[pos] == kCmdShow || args[pos] == kCmdShowAbrv) {
         pos++;
         while (pos < args.size()) {
-            if (args[pos] == kCmdShowOptOffset && (vw_config & ViewConfig::Offset) == ViewConfig::None) {
+            if (args[pos] == kCmdShowOptOffset &&
+                (vw_config & ViewConfig::Offset) == ViewConfig::None) {
                 vw_config |= ViewConfig::Offset;
-            } else if (args[pos] == kCmdShowOptAscii && (vw_config & ViewConfig::Ascii) == ViewConfig::None) {
+            } else if (args[pos] == kCmdShowOptAscii &&
+                       (vw_config & ViewConfig::Ascii) == ViewConfig::None) {
                 vw_config |= ViewConfig::Ascii;
-            } else if (args[pos] == kCmdShowOptLength && (vw_config & ViewConfig::Length) == ViewConfig::None) {
-				pos++;
-				if (pos >= args.size()) {
-					return printError(Error::InvalidSyntax);
-				}
-				std::int64_t val{};
-				auto str = std::string_view(args[pos]);
-				auto [ptr, ec] = std::from_chars(str.data(), str.data() + str.size(), val);
-				
-				if (ec != std::errc()) {
-					return printError(Error::InvalidSyntax);	
-				}
+            } else if (args[pos] == kCmdShowOptLength &&
+                       (vw_config & ViewConfig::Length) == ViewConfig::None) {
+                pos++;
+                if (pos >= args.size()) {
+                    return printError(Error::InvalidSyntax);
+                }
+                std::int64_t val{};
+                auto str = std::string_view(args[pos]);
+                auto [ptr, ec] = std::from_chars(str.data(), str.data() + str.size(), val);
 
-				if (val <= 0 || val > UINT8_MAX) {
-					return printError(Error::LengthOutOfRange);
-				}
+                if (ec != std::errc()) {
+                    return printError(Error::InvalidSyntax);
+                }
+
+                if (val <= 0 || val > UINT8_MAX) {
+                    return printError(Error::LengthOutOfRange);
+                }
 
                 vw_config |= ViewConfig::Length;
-				bytes_per_line = val;
+                bytes_per_line = val;
             } else if (filepath.empty()) {
                 filepath = args[pos];
             } else {
@@ -202,14 +193,14 @@ void
             pos++;
         }
 
-		if (filepath.empty()) {
-			return printError(Error::MissingFilePath);
-		}
+        if (filepath.empty()) {
+            return printError(Error::MissingFilePath);
+        }
 
         return view();
     }
 
-	return printError(Error::InvalidSyntax);
+    return printError(Error::InvalidSyntax);
 }
 
 } // namespace zuu::hexview
