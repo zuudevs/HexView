@@ -3,24 +3,27 @@
 #include <HexView/error.hpp>
 #include <HexView/macros.hpp>
 
-#include "view_config.hpp"
-
+#include <cstdint>
 #include <span>
 #include <string_view>
 
 namespace zuu::hexview {
+    
+enum class ViewConfig : std::uint8_t;
 
 class HexView {
   public:
-    static inline ViewConfig vw_config{ViewConfig::Hex};
-	static inline std::string_view filepath;
-	static inline std::uint8_t bytes_per_line{8};
+	static constexpr std::uint8_t default_bytes_per_line = 8;
     HexView() NOEXCEPT;
 
     void
-        exec(std::span<char*> args) const NOEXCEPT;
+        exec(std::span<char*> args) NOEXCEPT;
 
   private:
+	std::uint8_t bytes_per_line{default_bytes_per_line};
+    ViewConfig vw_config;
+	std::string_view filepath;
+
     void
         printError(Error errc) const NOEXCEPT;
     void
@@ -28,7 +31,7 @@ class HexView {
     void
         printVersion() const NOEXCEPT;
     void
-        view() const NOEXCEPT;
+        view() NOEXCEPT;
 };
 
 } // namespace zuu::hexview

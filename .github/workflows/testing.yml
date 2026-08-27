@@ -1,0 +1,83 @@
+name: Testing
+
+on:
+  push:
+    branches:
+      - main
+
+  pull_request:
+    branches:
+      - main
+
+env:
+  VCPKG_ROOT: ${{ github.workspace }}/vcpkg
+
+jobs:
+  build-and-test:
+    name: ${{ matrix.os }} / ${{ matrix.compiler }}
+
+    strategy:
+      fail-fast: false
+
+      matrix:
+        include:
+          - os: ubuntu-24.04
+            compiler: clang
+            preset: clang-debug
+
+          - os: ubuntu-24.04
+            compiler: gcc
+            preset: gcc-debug
+
+          - os: windows-2022
+            compiler: msvc
+            preset: msvc-debug
+
+    runs-on: ${{ matrix.os }}
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Install Linux Build Tools
+        if: runner.os == 'Linux'
+        shell: bash
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y \
+            ninja-build \
+            clang \
+            gcc \
+            g++ \
+            curl \
+            zip \
+            unzip \
+            tar
+
+      - name: Setup vcpkg on Linux
+        if: runner.os == 'Linux'
+        shell: bash
+        run: |
+          git clone https://github.com/microsoft/vcpkg "$VCPKG_ROOT"
+          "$VCPKG_ROOT/bootstrap-vcpkg.sh" -disableMetrics
+
+      - name: Setup vcpkg on Windows
+        if: runner.os == 'Windows'
+        shell: pwsh
+        run: |
+          git clone https://github.com/microsoft/vcpkg "$env:VCPKG_ROOT"
+          & "$env:VCPKG_ROOT/bootstrap-vcpkg.bat" -disableMetrics
+
+      - name: Configure Project
+        run: cmake --preset ${{ matrix.preset }} -DENABLE_TEST=ON
+
+      - name: Build Project
+        run: cmake --build --preset ${{ matrix.preset }}
+        
+      - name: Run Tests (Linux)
+        if: runner.os == 'Linux'
+        run: ctest --test-dir out/build/${{ matrix.preset }} --output-on-failure
+        
+      - name: Run Tests (Windows)
+        if: runner.os == 'Windows'
+        run: ctest --test-dir out/build/${{ matrix.preset }} --output-on-failure -C Debug

@@ -10,6 +10,7 @@ function(add_test_target name)
 				GTest::gtest_main
 				${PROJECT_NAME}::core
 		)
+		target_include_directories(${name} PRIVATE "${CMAKE_SOURCE_DIR}/internal")
 		gtest_discover_tests(${name})
 	endif()
 endfunction()

@@ -22,7 +22,7 @@
 
 namespace zuu::hexview {
 
-HexView::HexView() NOEXCEPT = default;
+HexView::HexView() NOEXCEPT : vw_config(ViewConfig::Hex) {}
 
 void
     HexView::printHelp() const NOEXCEPT {
@@ -53,7 +53,7 @@ void
 }
 
 void
-    HexView::view() const NOEXCEPT {
+    HexView::view() NOEXCEPT {
     if ((vw_config & ViewConfig::Offset) != ViewConfig::None) {
         std::print("{:<8} | ", "offset");
     }
@@ -136,9 +136,9 @@ void
 }
 
 void
-    HexView::exec(std::span<char*> args) const NOEXCEPT {
+    HexView::exec(std::span<char*> args) NOEXCEPT {
 #ifndef NDEBUG
-    std::println(stderr, "[{}] args size: {}\n", __FILE_NAME__, args.size());
+    std::println(stderr, "[{}] args size: {}\n", __FILE__, args.size());
 #endif
 
     if (args.size() < 2) {
@@ -164,6 +164,9 @@ void
                 vw_config |= ViewConfig::Ascii;
             } else if (args[pos] == kCmdShowOptLength && (vw_config & ViewConfig::Length) == ViewConfig::None) {
 				pos++;
+				if (pos >= args.size()) {
+					return printError(Error::InvalidSyntax);
+				}
 				std::int64_t val{};
 				auto str = std::string_view(args[pos]);
 				auto [ptr, ec] = std::from_chars(str.data(), str.data() + str.size(), val);
@@ -172,8 +175,8 @@ void
 					return printError(Error::InvalidSyntax);	
 				}
 
-				if (val <= 0) {
-					return printError(Error::NegativeLength);
+				if (val <= 0 || val > UINT8_MAX) {
+					return printError(Error::LengthOutOfRange);
 				}
 
                 vw_config |= ViewConfig::Length;
