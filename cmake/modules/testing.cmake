@@ -8,7 +8,7 @@ function(add_test_target name)
 		target_link_libraries(${name} 
 			PRIVATE 
 				GTest::gtest_main
-				${PROJECT_NAME}::${PROJECT_NAME}
+				${PROJECT_NAME}::core
 		)
 		gtest_discover_tests(${name})
 	endif()
