@@ -5,10 +5,11 @@
 namespace zuu::hexview {
 
 enum class ViewConfig : std::uint8_t {
-	None	= 0,
-	Hex		= 1 << 0,
-	Offset	= 1 << 1,
-	Ascii	= 1 << 2,
+	None    = 0,
+	Hex	    = None,
+	Offset	= 1 << 0,
+	Ascii	= 1 << 1,
+	Length  = 1 << 2
 };
 
 constexpr ViewConfig operator|(ViewConfig lhs, ViewConfig rhs) noexcept {

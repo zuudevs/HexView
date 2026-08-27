@@ -1,5 +1,7 @@
 #include <HexView/hex_view.hpp>
-#include <print>
+#ifndef NDEBUG
+	#include <print>
+#endif
 
 namespace zhv = zuu::hexview;
 

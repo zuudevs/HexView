@@ -1,20 +1,32 @@
 #include <HexView/error.hpp>
 #include <HexView/version.hpp>
 
+#include <charconv>
+#include <cstdint>
 #include <cstdio>
+#include <cstring>
 #include <print>
+#include <span>
+#include <string_view>
 
+#include <commands.hpp>
 #include <file_stream.hpp>
+
+#ifndef NDEBUG
+	#include <system_error>
+#endif
+
 #include <view_config.hpp>
-#include <view_task.hpp>
 
 #include <HexView/hex_view.hpp>
 
 namespace {
 
-namespace zhv = zuu::hexview;
+using namespace zuu::hexview;
 
-static inline zhv::ViewTask vw_task;
+static inline ViewConfig vw_config{ViewConfig::Hex};
+static inline std::string_view filepath;
+static inline std::uint8_t bytes_per_line{8};
 
 } // namespace
 
@@ -52,36 +64,45 @@ void
 
 void
     HexView::view() const NOEXCEPT {
-    if ((vw_task.conf & ViewConfig::Offset) != ViewConfig::None) {
+    if ((vw_config & ViewConfig::Offset) != ViewConfig::None) {
         std::print("{:<8} | ", "offset");
     }
 
-    for (std::size_t i = 0; i < 8; ++i) {
+    for (std::size_t i = 0; i < bytes_per_line; ++i) {
         std::print("{:02X} ", i);
     }
 
-    if ((vw_task.conf & ViewConfig::Ascii) != ViewConfig::None) {
+    if ((vw_config & ViewConfig::Ascii) != ViewConfig::None) {
         std::print("| ascii");
     }
 
     std::println();
-    if ((vw_task.conf & ViewConfig::Offset) != ViewConfig::None) {
+    if ((vw_config & ViewConfig::Offset) != ViewConfig::None) {
         std::print("----------");
     }
-    std::print("-------------------------");
-    if ((vw_task.conf & ViewConfig::Ascii) != ViewConfig::None) {
+
+	if ((vw_config & ViewConfig::Length) != ViewConfig::None) {
+		for (auto i = 0; i < bytes_per_line; ++i) {
+			std::print("---");
+		}
+	} else {
+		std::print("------------------------");
+	}
+
+    std::print("--");
+    if ((vw_config & ViewConfig::Ascii) != ViewConfig::None) {
         std::print("-------");
     }
     std::println();
 
     FileStream fst;
 
-    if (!fst.open(vw_task.filepath)) {
+    if (!fst.open(filepath)) {
         return;
     }
 
     while (true) {
-        const auto chunk = fst.getChunk();
+        const auto chunk = fst.getChunk(bytes_per_line);
 
         if (chunk.empty()) {
             break;
@@ -89,7 +110,7 @@ void
 
         const auto row_offset = fst.getOffset();
 
-        if ((vw_task.conf & ViewConfig::Offset) != ViewConfig::None) {
+        if ((vw_config & ViewConfig::Offset) != ViewConfig::None) {
             std::print("{:08X} | ", row_offset);
         }
 
@@ -97,11 +118,11 @@ void
             std::print("{:02X} ", static_cast<unsigned int>(byte));
         }
 
-        for (std::size_t i = chunk.size(); i < 8; ++i) {
+        for (std::size_t i = chunk.size(); i < bytes_per_line; ++i) {
             std::print("   ");
         }
 
-        if ((vw_task.conf & ViewConfig::Ascii) != ViewConfig::None) {
+        if ((vw_config & ViewConfig::Ascii) != ViewConfig::None) {
             std::print("| ");
 
             for (const auto byte : chunk) {
@@ -126,7 +147,6 @@ void
 
 void
     HexView::exec(std::span<char*> args) const NOEXCEPT {
-
 #ifndef NDEBUG
     std::println(stderr, "[{}] args size: {}\n", __FILE_NAME__, args.size());
 #endif
@@ -137,37 +157,45 @@ void
 
     auto pos = 1;
 
-    if (args[pos] == std::string("--help") || args[pos] == std::string("-h")) {
+    if (args[pos] == kCmdHelp || args[pos] == kCmdHelpAbrv) {
         return printHelp();
     }
 
-    if (args[pos] == std::string("--version") || args[pos] == std::string("-v")) {
+    if (args[pos] == kCmdVersion || args[pos] == kCmdVersionAbrv) {
         return printVersion();
     }
 
-    ViewConfig vwconf{ViewConfig::Hex};
-
-    if (args[pos] == std::string("--view") || args[pos] == std::string("-vw")) {
+    if (args[pos] == kCmdShow || args[pos] == kCmdShowAbrv) {
         pos++;
         while (pos < args.size()) {
-            if (args[pos] == std::string("--offset")) {
-                vwconf |= ViewConfig::Offset;
-            } else if (args[pos] == std::string("--ascii")) {
-                vwconf |= ViewConfig::Ascii;
-            } else if (vw_task.filepath.empty()) {
-                vw_task.filepath = args[pos];
+            if (args[pos] == kCmdShowOptOffset && (vw_config & ViewConfig::Offset) == ViewConfig::None) {
+                vw_config |= ViewConfig::Offset;
+            } else if (args[pos] == kCmdShowOptAscii && (vw_config & ViewConfig::Ascii) == ViewConfig::None) {
+                vw_config |= ViewConfig::Ascii;
+            } else if (args[pos] == kCmdShowOptLength && (vw_config & ViewConfig::Length) == ViewConfig::None) {
+				pos++;
+				std::int64_t val{};
+				auto str = std::string_view(args[pos]);
+				auto [ptr, ec] = std::from_chars(str.data(), str.data() + str.size(), val);
+				
+				if (ec != std::errc()) {
+					return printError(Error::InvalidSyntax);	
+				}
+
+                vw_config |= ViewConfig::Length;
+				bytes_per_line = val;
+            } else if (filepath.empty()) {
+                filepath = args[pos];
             } else {
                 return printError(Error::InvalidSyntax);
             }
             pos++;
         }
 
-        vw_task.conf = vwconf;
         return view();
     }
 
-    std::println(stderr, "Error: Command syntax is invalid\n");
-    return printHelp();
+	return printError(Error::InvalidSyntax);
 }
 
 } // namespace zuu::hexview
