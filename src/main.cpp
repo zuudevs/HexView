@@ -10,7 +10,7 @@ int
     for (auto i = 0; i < argc; i++) {
         PRINTLN_ERROR("{:>2}. {}", (i + 1), argv[i]);
     }
-    PRINTLN(stderr);
+    PRINTLN();
 #endif
     zhv::HexView hv;
     hv.exec(std::span(argv, argv + argc));
