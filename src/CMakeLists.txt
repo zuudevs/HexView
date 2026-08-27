@@ -5,12 +5,20 @@ add_library(core
 
 add_library(${PROJECT_NAME}::core ALIAS core)
 
-target_include_directories(core
-    PUBLIC
-        "${CMAKE_SOURCE_DIR}/include"
-    PRIVATE
-        "${CMAKE_SOURCE_DIR}/internal"
-)
+if(ENABLE_TEST)
+	target_include_directories(core
+		PUBLIC
+			"${CMAKE_SOURCE_DIR}/include"
+			"${CMAKE_SOURCE_DIR}/internal"
+	)
+else()
+	target_include_directories(core
+		PUBLIC
+			"${CMAKE_SOURCE_DIR}/include"
+		PRIVATE
+			"${CMAKE_SOURCE_DIR}/internal"
+	)
+endif()
 
 add_executable(hexview
      ${CMAKE_CURRENT_SOURCE_DIR}/main.cpp

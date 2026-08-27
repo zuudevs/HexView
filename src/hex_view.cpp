@@ -20,16 +20,6 @@
 
 #include <HexView/hex_view.hpp>
 
-namespace {
-
-using namespace zuu::hexview;
-
-static inline ViewConfig vw_config{ViewConfig::Hex};
-static inline std::string_view filepath;
-static inline std::uint8_t bytes_per_line{8};
-
-} // namespace
-
 namespace zuu::hexview {
 
 HexView::HexView() NOEXCEPT = default;
@@ -41,9 +31,9 @@ void
     std::println("  hexview [options] [command]");
     std::println("");
     std::println("Commands:");
-    std::println("  -vw, --view <filepath> [options]    View the hexadecimal content of a file");
+    std::println("  -s, --show <filepath> [options]    Show the hexadecimal content of a file");
     std::println("");
-    std::println("Options for --view:");
+    std::println("Options for --show:");
     std::println("  --offset                            Display byte offset column on the left");
     std::println(
         "  --ascii                             Display ASCII representation column on the right");
@@ -182,6 +172,10 @@ void
 					return printError(Error::InvalidSyntax);	
 				}
 
+				if (val <= 0) {
+					return printError(Error::NegativeLength);
+				}
+
                 vw_config |= ViewConfig::Length;
 				bytes_per_line = val;
             } else if (filepath.empty()) {
@@ -191,6 +185,10 @@ void
             }
             pos++;
         }
+
+		if (filepath.empty()) {
+			return printError(Error::MissingFilePath);
+		}
 
         return view();
     }
