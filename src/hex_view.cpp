@@ -133,13 +133,13 @@ void
 
 void
     HexView::printError(Error errc) const NOEXCEPT {
-    PRINTLN(stderr, "Error: {}", ResolveError(errc));
+    PRINTLN_ERROR("Error: {}", ResolveError(errc));
 }
 
 void
     HexView::exec(std::span<char*> args) NOEXCEPT {
 #ifndef NDEBUG
-    PRINTLN(stderr, "[{}] args size: {}\n", __FILE__, args.size());
+    PRINTLN_ERROR("[{}] args size: {}\n", __FILE__, args.size());
 #endif
 
     if (args.size() < 2) {
