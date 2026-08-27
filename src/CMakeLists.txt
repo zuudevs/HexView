@@ -12,11 +12,11 @@ target_include_directories(core
         "${CMAKE_SOURCE_DIR}/internal"
 )
 
-add_executable(hv
+add_executable(hexview
      ${CMAKE_CURRENT_SOURCE_DIR}/main.cpp
 )
 
-target_link_libraries(hv
+target_link_libraries(hexview
     PRIVATE
         ${PROJECT_NAME}::core
 )
