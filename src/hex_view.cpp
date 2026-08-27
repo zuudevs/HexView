@@ -9,8 +9,14 @@
 #ifdef __GNUC__
 	#include <fmt/core.h>
 	#include <fmt/std.h>
+
+	#define PRINT(...) fmt::print(__VA_ARGS__)
+	#define PRINTLN(...) fmt::println(__VA_ARGS__)
 #else
 	#include <print>
+
+	#define PRINT(...) std::print(__VA_ARGS__)
+	#define PRINTLN(...) std::println(__VA_ARGS__)
 #endif
 
 #include <span>
@@ -33,64 +39,64 @@ HexView::HexView() NOEXCEPT : vw_config(ViewConfig::Hex) {}
 
 void
     HexView::printHelp() const NOEXCEPT {
-    std::println("HexView - A Modern C++ Hexadecimal File Viewer");
-    std::println("Usage:");
-    std::println("  hexview [options] [command]");
-    std::println("");
-    std::println("Commands:");
-    std::println("  -s, --show <filepath> [options]    Show the hexadecimal content of a file");
-    std::println("");
-    std::println("Options for --show:");
-    std::println("  --offset                            Display byte offset column on the left");
-    std::println(
+    PRINTLN("HexView - A Modern C++ Hexadecimal File Viewer");
+    PRINTLN("Usage:");
+    PRINTLN("  hexview [options] [command]");
+    PRINTLN("");
+    PRINTLN("Commands:");
+    PRINTLN("  -s, --show <filepath> [options]    Show the hexadecimal content of a file");
+    PRINTLN("");
+    PRINTLN("Options for --show:");
+    PRINTLN("  --offset                            Display byte offset column on the left");
+    PRINTLN(
         "  --ascii                             Display ASCII representation column on the right");
-    std::println("");
-    std::println("General Options:");
-    std::println("  -h, --help                          Display this help message and exit");
-    std::println("  -v, --version                       Display version information and exit");
+    PRINTLN("");
+    PRINTLN("General Options:");
+    PRINTLN("  -h, --help                          Display this help message and exit");
+    PRINTLN("  -v, --version                       Display version information and exit");
 }
 
 void
     HexView::printVersion() const NOEXCEPT {
-    std::println("HexView");
-    std::println("--------------------");
-    std::println("Version {}", version);
-    std::println("Author {}", author);
-    std::println("Source {}", repository_url);
+    PRINTLN("HexView");
+    PRINTLN("--------------------");
+    PRINTLN("Version {}", version);
+    PRINTLN("Author {}", author);
+    PRINTLN("Source {}", repository_url);
 }
 
 void
     HexView::view() NOEXCEPT {
     if ((vw_config & ViewConfig::Offset) != ViewConfig::None) {
-        std::print("{:<8} | ", "offset");
+        PRINT("{:<8} | ", "offset");
     }
 
     for (std::size_t i = 0; i < bytes_per_line; ++i) {
-        std::print("{:02X} ", i);
+        PRINT("{:02X} ", i);
     }
 
     if ((vw_config & ViewConfig::Ascii) != ViewConfig::None) {
-        std::print("| ascii");
+        PRINT("| ascii");
     }
 
-    std::println();
+    PRINTLN();
     if ((vw_config & ViewConfig::Offset) != ViewConfig::None) {
-        std::print("----------");
+        PRINT("----------");
     }
 
 	if ((vw_config & ViewConfig::Length) != ViewConfig::None) {
 		for (auto i = 0; i < bytes_per_line; ++i) {
-			std::print("---");
+			PRINT("---");
 		}
 	} else {
-		std::print("------------------------");
+		PRINT("------------------------");
 	}
 
-    std::print("--");
+    PRINT("--");
     if ((vw_config & ViewConfig::Ascii) != ViewConfig::None) {
-        std::print("-------");
+        PRINT("-------");
     }
-    std::println();
+    PRINTLN();
 
     FileStream fst;
 
@@ -108,44 +114,44 @@ void
         const auto row_offset = fst.getOffset();
 
         if ((vw_config & ViewConfig::Offset) != ViewConfig::None) {
-            std::print("{:08X} | ", row_offset);
+            PRINT("{:08X} | ", row_offset);
         }
 
         for (const auto byte : chunk) {
-            std::print("{:02X} ", static_cast<unsigned int>(byte));
+            PRINT("{:02X} ", static_cast<unsigned int>(byte));
         }
 
         for (std::size_t i = chunk.size(); i < bytes_per_line; ++i) {
-            std::print("   ");
+            PRINT("   ");
         }
 
         if ((vw_config & ViewConfig::Ascii) != ViewConfig::None) {
-            std::print("| ");
+            PRINT("| ");
 
             for (const auto byte : chunk) {
                 const auto ch = static_cast<unsigned char>(byte);
 
                 if (ch >= 0x20 && ch <= 0x7E) {
-                    std::print("{}", static_cast<char>(ch));
+                    PRINT("{}", static_cast<char>(ch));
                 } else {
-                    std::print(".");
+                    PRINT(".");
                 }
             }
         }
 
-        std::println();
+        PRINTLN();
     }
 }
 
 void
     HexView::printError(Error errc) const NOEXCEPT {
-    std::println(stderr, "Error: {}", ResolveError(errc));
+    PRINTLN(stderr, "Error: {}", ResolveError(errc));
 }
 
 void
     HexView::exec(std::span<char*> args) NOEXCEPT {
 #ifndef NDEBUG
-    std::println(stderr, "[{}] args size: {}\n", __FILE__, args.size());
+    PRINTLN(stderr, "[{}] args size: {}\n", __FILE__, args.size());
 #endif
 
     if (args.size() < 2) {
