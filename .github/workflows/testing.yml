@@ -1,4 +1,4 @@
-name: Testing
+name: Project Configuration Test
 
 on:
   push:
@@ -13,7 +13,7 @@ env:
   VCPKG_ROOT: ${{ github.workspace }}/vcpkg
 
 jobs:
-  build-and-test:
+  build:
     name: ${{ matrix.os }} / ${{ matrix.compiler }}
 
     strategy:
@@ -37,7 +37,7 @@ jobs:
 
     steps:
       - name: Checkout Repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
 
       - name: Install Linux Build Tools
         if: runner.os == 'Linux'
@@ -46,13 +46,21 @@ jobs:
           sudo apt-get update
           sudo apt-get install -y \
             ninja-build \
-            clang \
             gcc \
             g++ \
             curl \
             zip \
             unzip \
             tar
+
+      - name: Install Clang 19
+        if: matrix.compiler == 'clang'
+        shell: bash
+        run: |
+          sudo apt-get install -y clang-19
+
+          clang-19 --version
+          clang++-19 --version
 
       - name: Setup vcpkg on Linux
         if: runner.os == 'Linux'
@@ -68,8 +76,16 @@ jobs:
           git clone https://github.com/microsoft/vcpkg "$env:VCPKG_ROOT"
           & "$env:VCPKG_ROOT/bootstrap-vcpkg.bat" -disableMetrics
 
+      - name: Configure Project with Clang
+        if: matrix.compiler == 'clang'
+        run: >
+          cmake --preset ${{ matrix.preset }}
+          -DCMAKE_C_COMPILER=clang-19
+          -DCMAKE_CXX_COMPILER=clang++-19
+
       - name: Configure Project
-        run: cmake --preset ${{ matrix.preset }} -DENABLE_TEST=ON
+        if: matrix.compiler != 'clang'
+        run: cmake --preset ${{ matrix.preset }}
 
       - name: Build Project
         run: cmake --build --preset ${{ matrix.preset }}
