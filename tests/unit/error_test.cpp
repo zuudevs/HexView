@@ -5,7 +5,7 @@
 
 using namespace zuu::hexview;
 
-TEST(error_handling, error_message) {
+TEST(ErrorTest, ErrorMessage) {
 	EXPECT_STREQ(ResolveError(Error::None), "No error");
 	EXPECT_STREQ(ResolveError(Error::PathNotFound), "Path does not exist");
 	EXPECT_STREQ(ResolveError(Error::PathNotFile), "Path does not refer to a regular file");
