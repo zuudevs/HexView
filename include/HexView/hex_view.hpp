@@ -1,9 +1,6 @@
 #pragma once
 
 #include <HexView/error.hpp>
-
-#define NDEBUG
-
 #include <HexView/macros.hpp>
 
 #include <span>

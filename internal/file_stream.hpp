@@ -9,9 +9,6 @@
 #include <fstream>
 #include <span>
 #include <vector>
-
-#define NDEBUG
-
 #include <HexView/macros.hpp>
 
 namespace zuu::hexview {

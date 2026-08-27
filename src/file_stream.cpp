@@ -8,7 +8,7 @@
 #include <ios>
 #include <span>
 
-#ifdef NDEBUG
+#ifndef NDEBUG
     #include <system_error>
 #endif
 
@@ -97,7 +97,7 @@ std::expected<FileStream::Path, Error>
         return std::unexpected{Error::PathNotFile};
     }
 
-#ifdef NDEBUG
+#ifndef NDEBUG
     std::error_code errc{};
     path = fs::canonical(path, errc);
 
