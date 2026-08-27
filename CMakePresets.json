@@ -7,7 +7,8 @@
       "hidden": true,
       "binaryDir": "${sourceDir}/out/build/${presetName}",
       "cacheVariables": {
-        "CMAKE_TOOLCHAIN_FILE": "$env{VCPKG_ROOT}/scripts/buildsystems/vcpkg.cmake"
+        "CMAKE_TOOLCHAIN_FILE": "$env{VCPKG_ROOT}/scripts/buildsystems/vcpkg.cmake",
+		"CMAKE_EXPORT_COMPILE_COMMANDS": "ON"
       }
     },
 
@@ -93,31 +94,37 @@
   "buildPresets": [
     {
       "name": "clang-debug",
-      "configurePreset": "clang-debug"
+      "configurePreset": "clang-debug",
+	  "jobs": 12
     },
     {
       "name": "clang-release",
-      "configurePreset": "clang-release"
+      "configurePreset": "clang-release",
+	  "jobs": 12
     },
 
     {
       "name": "gcc-debug",
-      "configurePreset": "gcc-debug"
+      "configurePreset": "gcc-debug",
+	  "jobs": 12
     },
     {
       "name": "gcc-release",
-      "configurePreset": "gcc-release"
+      "configurePreset": "gcc-release",
+	  "jobs": 12
     },
 
     {
       "name": "msvc-debug",
       "configurePreset": "msvc-debug",
-      "configuration": "Debug"
+      "configuration": "Debug",
+	  "jobs": 12
     },
     {
       "name": "msvc-release",
       "configurePreset": "msvc-release",
-      "configuration": "Release"
+      "configuration": "Release",
+	  "jobs": 12
     }
   ]
 }

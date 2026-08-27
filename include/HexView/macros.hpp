@@ -1,6 +1,6 @@
 #pragma once
 
-#ifdef ENABLE_EXCEPTION
+#ifdef NDEBUG
 	#define NOEXCEPT
 #else
 	#define NOEXCEPT noexcept

@@ -1,0 +1,5 @@
+CompileFlags:
+  Add:
+    - "-Iinclude"
+    - "-Iinternal"
+    - "-std=c++23"
