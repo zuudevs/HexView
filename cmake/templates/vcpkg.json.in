@@ -3,6 +3,7 @@
     "version": "@PROJECT_VERSION@",
     "description": "@PROJECT_DESCRIPTION@",
     "dependencies": [
-		"gtest"
+		"gtest",
+		"fmt"
 	]
 }

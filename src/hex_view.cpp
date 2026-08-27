@@ -5,7 +5,14 @@
 #include <cstdint>
 #include <cstdio>
 #include <cstring>
-#include <print>
+
+#ifdef __GNUC__
+	#include <fmt/core.h>
+	#include <fmt/std.h>
+#else
+	#include <print>
+#endif
+
 #include <span>
 #include <string_view>
 

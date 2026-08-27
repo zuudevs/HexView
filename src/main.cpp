@@ -1,6 +1,11 @@
 #include <HexView/hex_view.hpp>
 #ifndef NDEBUG
-	#include <print>
+	#ifdef __GNUC__
+		#include <fmt/core.h>
+		#include <fmt/std.h>
+	#else
+		#include <print>
+	#endif
 #endif
 
 namespace zhv = zuu::hexview;

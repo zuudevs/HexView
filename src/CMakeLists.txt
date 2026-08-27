@@ -5,6 +5,14 @@ add_library(core
 
 add_library(${PROJECT_NAME}::core ALIAS core)
 
+if(CMAKE_CXX_COMPILER_ID STREQUAL "GNU" OR CMAKE_COMPILER_IS_GNUCC)
+    include(${CMAKE_SOURCE_DIR}/cmake/third_party/fmt.cmake)
+    target_link_libraries(core
+        PUBLIC 
+            fmt::fmt
+    )
+endif()
+
 if(ENABLE_TEST)
 	target_include_directories(core
 		PUBLIC
