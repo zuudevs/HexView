@@ -15,23 +15,23 @@ namespace zuu::hexview {
 
 class FileStream {
   public:
-    FileStream() NOEXCEPT = default;
-    FileStream(const FileStream&) NOEXCEPT = delete;
-    FileStream(FileStream&&) NOEXCEPT = default;
+    FileStream() noexcept = default;
+    FileStream(const FileStream&) noexcept = delete;
+    FileStream(FileStream&&) noexcept = default;
     FileStream&
-        operator=(const FileStream&) NOEXCEPT = delete;
+        operator=(const FileStream&) noexcept = delete;
     FileStream&
-        operator=(FileStream&&) NOEXCEPT = default;
-    ~FileStream() NOEXCEPT;
+        operator=(FileStream&&) noexcept = default;
+    ~FileStream() noexcept;
 
     std::expected<void, ErrorDiagnostic>
-        open(std::string_view filepath) NOEXCEPT;
+        open(std::string_view filepath) noexcept;
     void
-        close() NOEXCEPT;
+        close() noexcept;
     [[nodiscard]] std::span<std::uint8_t>
-        getChunk(std::size_t bytes_per_line) NOEXCEPT;
+        getChunk(std::size_t bytes_per_line) noexcept;
     [[nodiscard]] std::uint64_t
-        getOffset() const NOEXCEPT;
+        getOffset() const noexcept;
 
   private:
     using Path = std::filesystem::path;
@@ -42,9 +42,9 @@ class FileStream {
     std::size_t size{};
 
     [[nodiscard]] std::expected<Path, ErrorDiagnostic>
-        ResolvePath(std::string_view filepath) const NOEXCEPT;
+        ResolvePath(std::string_view filepath) const noexcept;
     void
-        clear() NOEXCEPT;
+        clear() noexcept;
 };
 
 } // namespace zuu::hexview

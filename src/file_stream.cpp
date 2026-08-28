@@ -16,12 +16,12 @@ namespace fs = std::filesystem;
 
 namespace zuu::hexview {
 
-FileStream::~FileStream() NOEXCEPT {
+FileStream::~FileStream() noexcept {
     close();
 }
 
 std::expected<void, ErrorDiagnostic>
-    FileStream::open(std::string_view filepath) NOEXCEPT {
+    FileStream::open(std::string_view filepath) noexcept {
     auto res = ResolvePath(filepath);
     if (!res) {
         return std::unexpected{res.error()};
@@ -49,14 +49,14 @@ std::expected<void, ErrorDiagnostic>
 }
 
 void
-    FileStream::close() NOEXCEPT {
+    FileStream::close() noexcept {
     if (file.is_open()) {
         return file.close();
     }
 }
 
 std::span<std::uint8_t>
-    FileStream::getChunk(std::size_t bytes_per_line) NOEXCEPT {
+    FileStream::getChunk(std::size_t bytes_per_line) noexcept {
     auto remaining = size - offset;
 
     if (remaining == 0) {
@@ -77,12 +77,12 @@ std::span<std::uint8_t>
 }
 
 std::uint64_t
-    FileStream::getOffset() const NOEXCEPT {
+    FileStream::getOffset() const noexcept {
     return offset;
 }
 
 std::expected<FileStream::Path, ErrorDiagnostic>
-    FileStream::ResolvePath(std::string_view filepath) const NOEXCEPT {
+    FileStream::ResolvePath(std::string_view filepath) const noexcept {
     if (filepath.empty()) {
         return std::unexpected{ErrorDiagnostic(Error::InvalidPath)};
     }
@@ -114,7 +114,7 @@ std::expected<FileStream::Path, ErrorDiagnostic>
 }
 
 void
-    FileStream::clear() NOEXCEPT {
+    FileStream::clear() noexcept {
     file.clear();
     offset = 0;
     buffer.clear();

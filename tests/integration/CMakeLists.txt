@@ -17,10 +17,10 @@ add_integration_test(Version "Version" --version)
 
 # 2. Syntax & Error Handling
 add_integration_test(EmptyArgs "HexView - A Modern C.. Hexadecimal File Viewer" )
-add_integration_test(InvalidCommand "Error: Invalid syntax command" --not_a_cmd)
+add_integration_test(InvalidCommand "Error: Invalid command-line syntax" --not_a_cmd)
 add_integration_test(ShowMissingFile "Error: File path is required" --show)
 add_integration_test(ShowFileNotFound "Error: Path does not exist" --show non_existent_file.bin)
-add_integration_test(DuplicateFlags "Error: Invalid syntax command" --show "${DUMMY_FILE}" --offset --offset)
+add_integration_test(DuplicateFlags "Error: Invalid command-line syntax" --show "${DUMMY_FILE}" --offset --offset)
 
 # 3. Functional Data Output
 # Tests reading the dummy file. 'I' 'n' 't' 'e' 'g' 'r' 'a' 't' 'i' 'o' 'n' translates to Hex: 49 6E 74 65 67 72 61 74 69 6F 6E

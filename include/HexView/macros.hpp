@@ -1,10 +1,6 @@
 #pragma once
 
-#ifndef NDEBUG
-    #define NOEXCEPT
-#else
-    #define NOEXCEPT noexcept
-#endif
+
 
 #if defined(__cpp_lib_print) && __cpp_lib_print >= 202207L
 	#include <print>

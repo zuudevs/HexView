@@ -18,7 +18,7 @@ static void SetupDummyFile(const std::string& path, size_t size) {
 }
 
 static void BM_FileStreamRead(benchmark::State& state) {
-    const std::string filepath = "D:/Project/cpp_hex_viewer/assets/benchmark_dummy.bin";
+    const std::string filepath = "D:/Project/cpp_hex_viewer/assets/samples/benchmark_dummy.bin";
     size_t file_size = 10 * 1024 * 1024; // 10 MB
     SetupDummyFile(filepath, file_size);
 

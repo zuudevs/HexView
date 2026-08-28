@@ -14,24 +14,24 @@ enum class ViewConfig : std::uint8_t;
 class HexView {
   public:
 	static constexpr std::uint8_t default_bytes_per_line = 8;
-    HexView() NOEXCEPT;
+    HexView() noexcept;
 
     void
-        exec(std::span<char*> args) NOEXCEPT;
+        exec(std::span<char*> args) noexcept;
 
   private:
 	std::uint8_t bytes_per_line{default_bytes_per_line};
-    ViewConfig vw_config;
+    ViewConfig view_config;
 	std::string_view filepath;
 
     void
-        printError(const ErrorDiagnostic& errc) const NOEXCEPT;
+        print_error(const ErrorDiagnostic& errc) const noexcept;
     void
-        printHelp() const NOEXCEPT;
+        print_help() const noexcept;
     void
-        printVersion() const NOEXCEPT;
+        print_version() const noexcept;
     void
-        view() NOEXCEPT;
+        view() noexcept;
 };
 
 } // namespace zuu::hexview

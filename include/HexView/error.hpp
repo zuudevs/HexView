@@ -31,13 +31,13 @@ ResolveError(Error error) noexcept {
         case Error::PathNotFound: return "Path does not exist";
         case Error::PathNotFile: return "Path does not refer to a regular file";
         case Error::InvalidPath: return "Invalid path";
-        case Error::InvalidSyntax: return "Invalid syntax command";
+        case Error::InvalidSyntax: return "Invalid command-line syntax";
         case Error::FileOpenFailed: return "Failed to open file";
-        case Error::LengthOutOfRange: return "Length value must between 1 and 255";
-        case Error::LengthInvalid: return "Length value must exact number";
+        case Error::LengthOutOfRange: return "Length value must be between 1 and 255";
+        case Error::LengthInvalid: return "Length value must be a valid integer";
         case Error::MissingFilePath: return "File path is required";
         case Error::MissingLengthValue: return "Length value is required";
-        case Error::DuplicateShowOption: return "show option input is duplicated";
+        case Error::DuplicateShowOption: return "Duplicate --show option specified";
         case Error::Unknown:
         default: return "Unknown error";
     }
