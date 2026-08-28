@@ -1,6 +1,7 @@
 # HexView
 
 ![Build Status](https://github.com/zuudevs/cpp_hex_viewer/actions/workflows/project-configuration.yml/badge.svg)
+![Release](https://img.shields.io/badge/Release-v1.0.0-blue.svg)
 
 HexView is a modern, fast, and exception-safe Command-Line Hexadecimal File Viewer written in **C++23**. Developed as an exploration into low-level byte stream analysis, it is designed to securely parse and format binary data at gigabyte-per-second throughputs.
 

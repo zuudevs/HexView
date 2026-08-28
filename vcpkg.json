@@ -1,7 +1,7 @@
 {
     "name": "hexview",
-    "version": "0.6.0",
-    "description": "Implementasi Hex Viewer kustom menggunakan C++. Dikembangkan sebagai bagian dari eksplorasi pemrograman tingkat rendah untuk menganalisis byte stream dan struktur biner dari berbagai format file.",
+    "version": "1.0.0",
+    "description": "Custom Hex Viewer implementation using C++. Developed as part of an exploration of low-level programming to analyze byte streams and binary structures of various file formats.",
     "dependencies": [
 		"gtest",
 		"fmt",

@@ -28,3 +28,6 @@ The primary controller class. It manages state via the `ViewConfig` bitmask enum
 ### 3. `ErrorDiagnostic`
 An evolution of a simple enum-based error system, `ErrorDiagnostic` encapsulates underlying `Error` codes along with dynamic string tracing.
 - If a low-level OS error occurs (e.g., "Permission Denied"), `ErrorDiagnostic` carries this dynamic payload all the way up to the CLI renderer without risking `std::bad_alloc` crashes.
+
+### 4. Zero-Cost Abstractions & Move Semantics
+HexView strictly adheres to modern C++ move semantics. By natively utilizing the `noexcept` keyword across all safe boundaries, the compiler is guaranteed to perform optimized move operations (e.g., during vector resizing) rather than expensive copies, regardless of the build configuration.

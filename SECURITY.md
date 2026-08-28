@@ -7,7 +7,7 @@ Currently, only the latest active development branch and version `1.0.x` are sup
 | Version | Supported          |
 | ------- | ------------------ |
 | 1.0.x   | :white_check_mark: |
-| < 0.5.x | :x:                |
+| < 1.0.x | :x:                |
 
 ## Reporting a Vulnerability
 

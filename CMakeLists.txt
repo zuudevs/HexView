@@ -1,8 +1,8 @@
 cmake_minimum_required(VERSION 3.20)
 
 set(PROJECT_NAME "HexView")
-set(PROJECT_VERSION 0.6.0)
-set(PROJECT_DESCRIPTION "Implementasi Hex Viewer kustom menggunakan C++. Dikembangkan sebagai bagian dari eksplorasi pemrograman tingkat rendah untuk menganalisis byte stream dan struktur biner dari berbagai format file.")
+set(PROJECT_VERSION 1.0.0)
+set(PROJECT_DESCRIPTION "Custom Hex Viewer implementation using C++. Developed as part of an exploration of low-level programming to analyze byte streams and binary structures of various file formats.")
 set(PROJECT_AUTHOR "zuudevs")
 set(PROJECT_REPOSITORY_URL "https://github.com/${PROJECT_AUTHOR}/${PROJECT_NAME}.git")
 
