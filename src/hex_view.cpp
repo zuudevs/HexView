@@ -21,6 +21,36 @@
 
 #include <HexView/hex_view.hpp>
 
+namespace {
+
+[[nodiscard]] inline bool is_4_bytes_numeric(std::string_view str) noexcept {
+	if (str.empty() || str.size() > 4) {
+    	return false;
+	}
+
+	if (str.size() == 1 && static_cast<std::uint8_t>(str[0] - '0') > 9) {
+		return false;
+	}
+
+	constexpr std::uint32_t kBytesZero4 = 0x30303030;
+	constexpr std::uint32_t kBytesNine4 = 0x39393939;
+
+	std::uint32_t block{kBytesZero4};
+
+	std::memcpy(&block, str.data(), str.size());
+
+	constexpr std::uint32_t kBytesLow4 = 0x01010101;
+	constexpr std::uint32_t kBytesHigh4 = 0x80808080;
+
+	constexpr std::uint32_t kBytesMax4 = kBytesHigh4 - kBytesNine4 - kBytesLow4;
+
+	std::uint32_t left = block - kBytesZero4;
+	std::uint32_t right = block + kBytesMax4;
+	return ((left | right) & kBytesHigh4) == 0;
+}
+
+} // namespace
+
 namespace zuu::hexview {
 
 HexView::HexView() NOEXCEPT : vw_config(ViewConfig::Hex) {}
@@ -88,8 +118,9 @@ void
 
     FileStream fst;
 
-    if (!fst.open(filepath)) {
-        return;
+    auto res = fst.open(filepath);
+    if (!res) {
+        return printError(res.error());
     }
 
     while (true) {
@@ -132,8 +163,8 @@ void
 }
 
 void
-    HexView::printError(Error errc) const NOEXCEPT {
-    PRINTLN_ERROR("Error: {}", ResolveError(errc));
+    HexView::printError(const ErrorDiagnostic& errc) const NOEXCEPT {
+    PRINTLN_ERROR("Error: {}", errc.message());
 }
 
 void
@@ -159,23 +190,34 @@ void
     if (args[pos] == kCmdShow || args[pos] == kCmdShowAbrv) {
         pos++;
         while (pos < args.size()) {
-            if (args[pos] == kCmdShowOptOffset &&
-                (vw_config & ViewConfig::Offset) == ViewConfig::None) {
-                vw_config |= ViewConfig::Offset;
-            } else if (args[pos] == kCmdShowOptAscii &&
-                       (vw_config & ViewConfig::Ascii) == ViewConfig::None) {
-                vw_config |= ViewConfig::Ascii;
-            } else if (args[pos] == kCmdShowOptLength &&
-                       (vw_config & ViewConfig::Length) == ViewConfig::None) {
-                pos++;
-                if (pos >= args.size()) {
+            if (args[pos] == kCmdShowOptOffset) {
+                if ((vw_config & ViewConfig::Offset) != ViewConfig::None) {
                     return printError(Error::InvalidSyntax);
                 }
+                vw_config |= ViewConfig::Offset;
+            } else if (args[pos] == kCmdShowOptAscii) {
+                if ((vw_config & ViewConfig::Ascii) != ViewConfig::None) {
+                    return printError(Error::InvalidSyntax);
+                }
+                vw_config |= ViewConfig::Ascii;
+            } else if (args[pos] == kCmdShowOptLength) {
+                if ((vw_config & ViewConfig::Length) != ViewConfig::None) {
+                    return printError(Error::InvalidSyntax);
+                }
+                pos++;
+                if (pos >= args.size()) {
+                    return printError(Error::MissingLengthValue);
+                }
+
+				if (!is_4_bytes_numeric(args[pos])) {
+					return printError(Error::LengthInvalid);
+				}
+
                 std::int64_t val{};
                 auto str = std::string_view(args[pos]);
                 auto [ptr, ec] = std::from_chars(str.data(), str.data() + str.size(), val);
 
-                if (ec != std::errc()) {
+                if (ec != std::errc() || ptr != str.data() + str.size()) {
                     return printError(Error::InvalidSyntax);
                 }
 
@@ -185,7 +227,7 @@ void
 
                 vw_config |= ViewConfig::Length;
                 bytes_per_line = val;
-            } else if (filepath.empty()) {
+            } else if (filepath.empty() && args[pos][0] != '-') {
                 filepath = args[pos];
             } else {
                 return printError(Error::InvalidSyntax);

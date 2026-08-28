@@ -20,7 +20,7 @@ FileStream::~FileStream() NOEXCEPT {
     close();
 }
 
-std::expected<void, Error>
+std::expected<void, ErrorDiagnostic>
     FileStream::open(std::string_view filepath) NOEXCEPT {
     auto res = ResolvePath(filepath);
     if (!res) {
@@ -31,14 +31,14 @@ std::expected<void, Error>
     file.open(*res, std::ios::binary | std::ios::ate);
 
     if (!file.is_open()) {
-        return std::unexpected{Error::FileOpenFailed};
+        return std::unexpected{ErrorDiagnostic(Error::FileOpenFailed)};
     }
 
     auto sz = file.tellg();
 
     if (sz == -1) {
         file.close();
-        return std::unexpected{Error::FileOpenFailed};
+        return std::unexpected{ErrorDiagnostic(Error::FileOpenFailed, "tellg() failed to get file size")};
     }
 
     file.seekg(0, std::ios::beg);
@@ -81,34 +81,36 @@ std::uint64_t
     return offset;
 }
 
-std::expected<FileStream::Path, Error>
+std::expected<FileStream::Path, ErrorDiagnostic>
     FileStream::ResolvePath(std::string_view filepath) const NOEXCEPT {
     if (filepath.empty()) {
-        return std::unexpected{Error::InvalidPath};
+        return std::unexpected{ErrorDiagnostic(Error::InvalidPath)};
     }
 
     Path path(filepath);
+    std::error_code ec;
 
-    if (!fs::exists(path)) {
-        return std::unexpected{Error::PathNotFound};
+    if (!fs::exists(path, ec) || ec) {
+        if (ec) return std::unexpected{ErrorDiagnostic(Error::Unknown, ec.message())};
+        return std::unexpected{ErrorDiagnostic(Error::PathNotFound)};
     }
 
-    if (!fs::is_regular_file(path)) {
-        return std::unexpected{Error::PathNotFile};
+    if (!fs::is_regular_file(path, ec) || ec) {
+        if (ec) return std::unexpected{ErrorDiagnostic(Error::Unknown, ec.message())};
+        return std::unexpected{ErrorDiagnostic(Error::PathNotFile)};
     }
 
-#ifndef NDEBUG
-    std::error_code errc{};
-    path = fs::canonical(path, errc);
-
-    if (errc) {
-        throw std::system_error(errc, errc.message());
+    path = fs::canonical(path, ec);
+    if (ec) {
+        return std::unexpected{ErrorDiagnostic(Error::Unknown, ec.message())};
     }
-#else
-    path = fs::canonical(path);
-#endif
 
-    return fs::absolute(path).lexically_normal();
+    path = fs::absolute(path, ec);
+    if (ec) {
+        return std::unexpected{ErrorDiagnostic(Error::Unknown, ec.message())};
+    }
+
+    return path.lexically_normal();
 }
 
 void

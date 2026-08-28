@@ -24,7 +24,7 @@ class FileStream {
         operator=(FileStream&&) NOEXCEPT = default;
     ~FileStream() NOEXCEPT;
 
-    std::expected<void, Error>
+    std::expected<void, ErrorDiagnostic>
         open(std::string_view filepath) NOEXCEPT;
     void
         close() NOEXCEPT;
@@ -41,7 +41,7 @@ class FileStream {
     std::uint64_t offset{};
     std::size_t size{};
 
-    [[nodiscard]] std::expected<Path, Error>
+    [[nodiscard]] std::expected<Path, ErrorDiagnostic>
         ResolvePath(std::string_view filepath) const NOEXCEPT;
     void
         clear() NOEXCEPT;

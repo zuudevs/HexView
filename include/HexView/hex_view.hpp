@@ -25,7 +25,7 @@ class HexView {
 	std::string_view filepath;
 
     void
-        printError(Error errc) const NOEXCEPT;
+        printError(const ErrorDiagnostic& errc) const NOEXCEPT;
     void
         printHelp() const NOEXCEPT;
     void

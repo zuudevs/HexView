@@ -35,7 +35,7 @@ TEST_F(FileStreamTest, OpenInvalidFile) {
     FileStream fs;
     auto res = fs.open("this_file_does_not_exist_123.bin");
     EXPECT_FALSE(res.has_value());
-    EXPECT_EQ(res.error(), Error::PathNotFound);
+    EXPECT_EQ(res.error().code(), Error::PathNotFound);
 }
 
 TEST_F(FileStreamTest, GetChunkCorrectSize) {
