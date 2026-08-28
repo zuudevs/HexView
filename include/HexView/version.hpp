@@ -3,9 +3,9 @@
 namespace zuu::hexview {
 
 constexpr const char* author = "zuudevs";
-constexpr const char* version = "0.1.0";
+constexpr const char* version = "0.5.0";
 constexpr unsigned char version_major = 0;
-constexpr unsigned char version_minor = 1;
+constexpr unsigned char version_minor = 5;
 constexpr unsigned char version_patch = 0;
 constexpr const char* repository_url = "https://github.com/zuudevs/HexView.git";
 constexpr const char* app_name = "HexView";

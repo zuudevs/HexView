@@ -21,3 +21,5 @@ add_dependencies(unit_tests
 	hex_view_test
 	commands_test
 )
+
+add_subdirectory(integration)

@@ -1,6 +1,7 @@
 #include <gtest/gtest.h>
 #include <HexView/hex_view.hpp>
 
+#include <cstring>
 #include <vector>
 
 using namespace zuu::hexview;
