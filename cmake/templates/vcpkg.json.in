@@ -4,6 +4,7 @@
     "description": "@PROJECT_DESCRIPTION@",
     "dependencies": [
 		"gtest",
-		"fmt"
+		"fmt",
+		"benchmark"
 	]
 }
